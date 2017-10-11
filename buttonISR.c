@@ -8,6 +8,8 @@
 #include "buttonISR.h"
 #include "altera_avalon_pio_regs.h"
 #include "sys\alt_irq.h"
+#include "HexDisplay.h"
+#include "lcd.h"
 
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 void buttonISR(void* context)
@@ -19,7 +21,7 @@ void buttonISR(void* context, alt_u32 id)
     /* Cast context It is important that this be declared 
      * volatile to avoid unwanted compiler optimization.
      */
-	alt_u32* pCount = (alt_32*)context;
+	alt_u32* pCount = (alt_u32*)context;
     /* Store the value in the PUSHBUTTONS's edge capture register in *context. */
 	alt_u8 buttons = IORD(PUSHBUTTONS_BASE, 3);
     /* Reset the PUSHBUTTONS's edge capture register. */
@@ -34,7 +36,7 @@ void buttonISR(void* context, alt_u32 id)
     		LCD_cursor(0,0);
     		LCD_text("Running...      ");
     	}else {//it is on, 1 is on
-    		timer_setting = 0x5; // turn it off 1011b = 0x5
+    		timer_setting = 0xB; // turn it off 1011b = 0xB
     		LCD_cursor(0,0);
     		LCD_text("Paused...     ");
     	}

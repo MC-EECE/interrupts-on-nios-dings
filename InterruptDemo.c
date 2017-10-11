@@ -4,13 +4,14 @@
 #include "alt_types.h"
 #include "sys\alt_irq.h"
 #include "timerISR.h"
+#include "buttonISR.h"
 
 /*******************************************************************************
  * int main()                                                                  *
  *                                                                             *
  ******************************************************************************/
 
-volatile alt_u8 leading_zeros = 0x01&IORD(SLIDER_SWITCHES_BASE,0);
+//volatile alt_u8 leading_zeros;
 
 int main(void)
 { 
@@ -18,11 +19,13 @@ int main(void)
 	alt_u32 * pCount;
 	static alt_u32 count = 0;
 	pCount = &count;
-
+	//leading_zeros = 0x01&IORD(SLIDER_SWITCHES_BASE,0);
     /* Initialize Variables */
 
     /* Register ISRs */
-	//alt_irq_register(PUSHBUTTONS_IRQ, ?, buttonISR);
+	// Register the pushbutton ISR
+	alt_irq_register(PUSHBUTTONS_IRQ, (void*)pCount, buttonISR);
+	// Register the timer ISR
 	alt_irq_register(INTERVAL_TIMER_IRQ, (void*)pCount, timerISR);
     /* Initialize Timer */
 	// Setup start value
@@ -33,7 +36,7 @@ int main(void)
 
     // Initialize the pushbuttons
     IOWR(PUSHBUTTONS_BASE, 2, 0XE); //1110b=E because pushbutton 0 is reset
-    // Register the pushbutton ISR
+
 
 
     /* Loop while processing interrupts */
